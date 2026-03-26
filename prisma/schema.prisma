@@ -11,3 +11,22 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  username String?
+
+  sendMessages     PersonalMessage[] @relation("SendMessages")
+  receivedMessages PersonalMessage[] @relation("ReceivedMessages")
+}
+
+model PersonalMessage {
+  id         Int     @id @default(autoincrement())
+  content    String
+  viewed     Boolean @default(false)
+  sender     User    @relation(name: "SendMessages", fields: [senderId], references: [id])
+  senderId   Int
+  receiver   User    @relation(name: "ReceivedMessages", fields: [receiverId], references: [id])
+  receiverId Int
+}
